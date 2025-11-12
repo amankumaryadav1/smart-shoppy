@@ -6,14 +6,17 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { Header } from "./components/Header";
 import { useCart } from "./hooks/useCart";
+import { useState } from "react";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const { cart, addToCart, removeFromCart, updateQuantity, total, itemCount } = useCart();
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -21,10 +24,11 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Header cartItemCount={itemCount} />
+          <Header cartItemCount={itemCount} onSearch={setSearchQuery} />
           <Routes>
-            <Route path="/" element={<Home onAddToCart={addToCart} />} />
+            <Route path="/" element={<Home onAddToCart={addToCart} searchQuery={searchQuery} />} />
             <Route path="/product/:id" element={<ProductDetail onAddToCart={addToCart} />} />
+            <Route path="/auth" element={<Auth />} />
             <Route 
               path="/cart" 
               element={

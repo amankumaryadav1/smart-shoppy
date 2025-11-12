@@ -9,9 +9,10 @@ import { Sparkles } from "lucide-react";
 
 interface HomeProps {
   onAddToCart: (product: Product) => void;
+  searchQuery?: string;
 }
 
-export default function Home({ onAddToCart }: HomeProps) {
+export default function Home({ onAddToCart, searchQuery = "" }: HomeProps) {
   const { interactions } = useInteractions();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [trendingProducts, setTrendingProducts] = useState<Product[]>([]);
@@ -23,10 +24,15 @@ export default function Home({ onAddToCart }: HomeProps) {
     setTrendingProducts(trending.length > 0 ? trending : products.slice(0, 6));
   }, [interactions]);
 
-  const filteredProducts =
-    selectedCategory === "All"
-      ? products
-      : products.filter((p) => p.category === selectedCategory);
+  const filteredProducts = searchQuery.trim()
+    ? products.filter((p) =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : selectedCategory === "All"
+    ? products
+    : products.filter((p) => p.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,7 +57,7 @@ export default function Home({ onAddToCart }: HomeProps) {
       </section>
 
       {/* Trending Section */}
-      {trendingProducts.length > 0 && (
+      {!searchQuery && trendingProducts.length > 0 && (
         <section className="container mx-auto px-4 py-16">
           <div className="flex items-center gap-3 mb-8">
             <Sparkles className="h-6 w-6 text-primary" />
@@ -67,27 +73,37 @@ export default function Home({ onAddToCart }: HomeProps) {
 
       {/* All Products Section */}
       <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold mb-8 text-foreground">All Products</h2>
+        <h2 className="text-3xl font-bold mb-8 text-foreground">
+          {searchQuery ? `Search Results for "${searchQuery}"` : "All Products"}
+        </h2>
         
         {/* Category Filter */}
-        <div className="flex flex-wrap gap-3 mb-8">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
+        {!searchQuery && (
+          <div className="flex flex-wrap gap-3 mb-8">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? "default" : "outline"}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+        )}
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
-          ))}
-        </div>
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">No products found matching "{searchQuery}"</p>
+          </div>
+        )}
       </section>
     </div>
   );
