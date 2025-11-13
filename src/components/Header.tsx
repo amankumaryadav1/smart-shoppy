@@ -70,6 +70,9 @@ export function Header({ cartItemCount, onSearch }: HeaderProps) {
           <Link to="/" className="text-foreground hover:text-primary transition-colors font-medium hidden sm:block">
             Home
           </Link>
+          <Link to="/admin" className="text-foreground hover:text-primary transition-colors font-medium hidden sm:block">
+            Admin
+          </Link>
           {user ? (
             <Button variant="ghost" size="icon" onClick={handleSignOut} title="Sign out">
               <LogOut className="h-5 w-5" />

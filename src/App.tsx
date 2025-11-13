@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Auth from "./pages/Auth";
+import Checkout from "./pages/Checkout";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { Header } from "./components/Header";
 import { useCart } from "./hooks/useCart";
@@ -15,7 +17,7 @@ import { useState } from "react";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const { cart, addToCart, removeFromCart, updateQuantity, total, itemCount } = useCart();
+  const { cart, addToCart, removeFromCart, updateQuantity, clearCart, total, itemCount } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -40,6 +42,17 @@ const App = () => {
                 />
               } 
             />
+            <Route 
+              path="/checkout" 
+              element={
+                <Checkout 
+                  cart={cart} 
+                  total={total}
+                  onClearCart={clearCart}
+                />
+              } 
+            />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -115,9 +115,11 @@ export default function Cart({ cart, onUpdateQuantity, onRemove, total }: CartPr
                   </div>
                 </div>
 
-                <Button className="w-full" size="lg">
-                  Proceed to Checkout
-                </Button>
+                <Link to="/checkout" className="block">
+                  <Button className="w-full" size="lg">
+                    Proceed to Checkout
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
